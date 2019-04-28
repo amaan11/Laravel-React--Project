@@ -1,0 +1,25 @@
+.form-control {
+    width: 300px;
+}
+.LoginApp {
+    width: 400px;
+    margin: auto;
+    margin-top: 80px;
+    padding: 40px;
+    border: 1px solid grey;
+}
+label {
+    margin: 5px 15px 0 0;
+}
+.signInDiv {
+    display: flex;
+    padding-bottom: 30px;
+}
+.LoginBtn {
+    margin-top: 20px;
+    width: 330px;
+}
+h4 {
+    width: 100px;
+    margin: auto;
+}

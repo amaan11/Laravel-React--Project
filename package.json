@@ -1,0 +1,67 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": " npm run development",
+        "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "watch": "npm run development -- --watch",
+        "watch-poll": "npm run watch -- --watch-poll",
+        "hot": "cross-env NODE_ENV=development node_modules/webpack-dev-server/bin/webpack-dev-server.js --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+        "prod": "npm run production",
+        "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --no-progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-class-properties": "^7.3.4",
+        "@babel/preset-react": "^7.0.0",
+        "@fortawesome/fontawesome-free": "^5.7.2",
+        "axios": "^0.18",
+        "bootstrap": "^4.3.1",
+        "cross-env": "^5.1",
+        "jquery": "^3.2",
+        "laravel-mix": "^4.0.7",
+        "lodash": "^4.17.5",
+        "popper.js": "^1.12",
+        "react": "^16.2.0",
+        "react-dom": "^16.2.0",
+        "resolve-url-loader": "^2.3.1",
+        "sass": "^1.15.2",
+        "sass-loader": "^7.1.0"
+    },
+    "dependencies": {
+        "@material-ui/core": "^3.9.2",
+        "@material-ui/icons": "^3.0.2",
+        "@progress/kendo-data-query": "^1.5.1",
+        "@progress/kendo-react-dateinputs": "^2.8.0",
+        "@progress/kendo-react-dropdowns": "^2.8.0",
+        "@progress/kendo-react-grid": "^2.8.0",
+        "@progress/kendo-react-inputs": "^2.8.0",
+        "@progress/kendo-react-intl": "^2.8.0",
+        "autosuggest-highlight": "^3.1.1",
+        "date-fns": "^1.30.1",
+        "formik": "^1.5.1",
+        "mdbreact": "^4.11.0",
+        "mui-places-autocomplete": "^2.0.0",
+        "react-autocomplete": "^1.8.1",
+        "react-bootstrap": "^1.0.0-beta.5",
+        "react-facebook-login": "^4.1.1",
+        "react-google-login": "^5.0.2",
+        "react-redux": "^6.0.1",
+        "react-router": "^4.3.1",
+        "react-router-dom": "^4.3.1",
+        "react-validate-form": "^1.0.7",
+        "react-virtualized": "^9.21.0",
+        "redux": "^4.0.1",
+        "redux-logger": "^3.0.6",
+        "redux-thunk": "^2.3.0",
+        "sweetalert": "^2.1.2"
+    },
+    "babelrc": {
+        "presets": [
+            "@babel/preset-env",
+            "@babel/preset-react"
+        ],
+        "plugins": [
+            "@babel/plugin-proposal-class-properties",
+            "transform-class-properties"
+        ]
+    }
+}
