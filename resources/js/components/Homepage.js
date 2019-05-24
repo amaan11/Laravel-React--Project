@@ -72,14 +72,37 @@ const styles = theme => ({
             duration: theme.transitions.duration.enteringScreen
         }),
         marginLeft: 0
+    },
+    btn: {
+        color: "white",
+        margin: "0 20px 0 1200px"
+    },
+    signupBtn: {
+        color: "white"
     }
 });
 
 class HomePage extends React.Component {
+    constructor(props) {
+        super(props);
+    }
     state = {
         open: false
     };
 
+    drawerEventHandler = text => {
+        if (text == "Sign Out") {
+            this.signOutHandler();
+        }
+    };
+
+    mouseOver = event => {
+        var element = document.getElementById("button");
+        var e = document.getElementById("signupBtn");
+
+        e.style.color = "white";
+        element.style.color = "white";
+    };
     handleDrawerOpen = () => {
         this.setState({ open: true });
     };
@@ -87,10 +110,16 @@ class HomePage extends React.Component {
     handleDrawerClose = () => {
         this.setState({ open: false });
     };
+    signOutHandler = () => {
+        // console.log(Auth->user());
+    };
 
     render() {
         const { classes, theme } = this.props;
         const { open } = this.state;
+        const data = this.props.location.state.value;
+
+        // console.log("data", data.firstname);
 
         return (
             <div className={classes.root}>
@@ -113,6 +142,22 @@ class HomePage extends React.Component {
                         >
                             <MenuIcon />
                         </IconButton>
+                        <a
+                            href="/login"
+                            className={classes.btn}
+                            onMouseOver={this.mouseOver}
+                            id="button"
+                        >
+                            Login
+                        </a>
+                        <a
+                            href="signup"
+                            className={classes.signupBtn}
+                            onMouseOver={this.mouseOver}
+                            id="signupBtn"
+                        >
+                            Signup
+                        </a>
                         <Typography variant="h6" color="inherit" noWrap />
                     </Toolbar>
                 </AppBar>
@@ -126,6 +171,15 @@ class HomePage extends React.Component {
                     }}
                 >
                     <div className={classes.drawerHeader}>
+                        <List>
+                            {["Hello" + " " + data.firstname].map(
+                                (text, index) => (
+                                    <ListItem button key={text}>
+                                        <ListItemText primary={text} />
+                                    </ListItem>
+                                )
+                            )}{" "}
+                        </List>
                         <IconButton onClick={this.handleDrawerClose}>
                             {theme.direction === "ltr" ? (
                                 <ChevronLeftIcon />
@@ -135,6 +189,7 @@ class HomePage extends React.Component {
                         </IconButton>
                     </div>
                     <Divider />
+
                     <List>
                         {["Book Flight"].map((text, index) => (
                             <ListItem button key={text}>
@@ -150,7 +205,11 @@ class HomePage extends React.Component {
                             "About Us",
                             "Sign Out"
                         ].map((text, index) => (
-                            <ListItem button key={text}>
+                            <ListItem
+                                button
+                                key={text}
+                                onClick={() => this.drawerEventHandler(text)}
+                            >
                                 <ListItemText primary={text} />
                             </ListItem>
                         ))}

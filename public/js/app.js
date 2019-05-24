@@ -24772,7 +24772,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, ".form-control {\n    width: 300px;\n}\n.LoginApp {\n    width: 400px;\n    margin: auto;\n    margin-top: 80px;\n    padding: 40px;\n    border: 1px solid grey;\n}\nlabel {\n    margin: 5px 15px 0 0;\n}\n.signInDiv {\n    display: flex;\n    padding-bottom: 30px;\n}\n.LoginBtn {\n    margin-top: 20px;\n    width: 330px;\n}\nh4 {\n    width: 100px;\n    margin: auto;\n}\n", ""]);
+exports.push([module.i, ".form-control {\n    width: 300px;\n}\n.LoginApp {\n    width: 400px;\n    margin: auto;\n    margin-top: 80px;\n    padding: 40px;\n    border: 1px solid grey;\n}\n\nlabel {\n    margin: 5px 15px 0 0;\n}\n.signInDiv {\n    display: flex;\n    padding-bottom: 30px;\n}\n.LoginBtn {\n    margin-top: 20px;\n    width: 330px;\n}\nh4 {\n    width: 100px;\n    margin: auto;\n}\n", ""]);
 
 // exports
 
@@ -110768,13 +110768,19 @@ var fetchUser = function fetchUser(userData) {
       body: JSON.stringify(userData)
     }).then(function (response) {
       return response.json();
-    }).then(function (data) {
-      if (data.status) {
-        _history__WEBPACK_IMPORTED_MODULE_1__["default"].push('home');
+    }) // console.log(res.data[0].firstname + res.data[0].lastname);
+    .then(function (res) {
+      if (res.status) {
+        _history__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+          pathname: "/",
+          state: {
+            value: res.data[0]
+          }
+        });
       } else {
         swal({
           icon: "error",
-          text: 'Please Enter a Valid username and password'
+          text: "Please Enter a Valid username and password"
         });
       }
     });
@@ -110794,12 +110800,12 @@ var newUser = function newUser(userData) {
     }).then(function (response) {
       return response.json();
     }).then(function (data) {
-      if (data === 'Saved successfully') {
-        _history__WEBPACK_IMPORTED_MODULE_1__["default"].push('home');
+      if (data === "Saved successfully") {
+        _history__WEBPACK_IMPORTED_MODULE_1__["default"].push("home");
       } else {
         swal({
           icon: "error",
-          text: 'Signup Failed!PLease Try Again'
+          text: "Signup Failed!PLease Try Again"
         });
       }
     });
@@ -110955,6 +110961,8 @@ function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) r
 
 
 
+ // import getCity from "./getCity";
+// console.log(getCity());
 
 var suggestions = [{
   label: "Ahmedabad"
@@ -111568,6 +111576,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _Pagination__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Pagination */ "./resources/js/components/Pagination.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
@@ -111597,6 +111609,13 @@ var styles = {
     position: "absolute",
     left: 1200,
     top: 20
+  },
+  timeFilter: {
+    margin: 5
+  },
+  mainDivFilter: {
+    display: "flex",
+    flexDirection: "row"
   }
 };
 
@@ -111611,6 +111630,123 @@ function (_Component) {
     _classCallCheck(this, Flight);
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Flight).call(this, props));
+
+    _this.sortHandler = function (sortOption) {
+      var data = _this.props.location.state.value;
+
+      _this.setState(function () {
+        return {
+          count: _objectSpread({}, _this.state.count, _defineProperty({}, sortOption, _this.state.count[sortOption] + 1))
+        };
+      }, function () {
+        if (_this.state.count[sortOption] % 2 === 1) {
+          _this.setState(function () {
+            return {
+              sort: _objectSpread({}, _this.state.sort, _defineProperty({}, sortOption, "asc"))
+            };
+          }, function () {
+            var sortData = {
+              // [sortOption]: this.state.sort[sortOption],
+              sort: "true",
+              sortField: [sortOption],
+              sortOrder: _this.state.sort[sortOption],
+              departure: data[0].departure_city,
+              arrival: data[0].arrival_city,
+              date: data[0].departure_date,
+              passenger: "1",
+              category: "economy"
+            };
+            fetch("sort-flight", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+              },
+              body: JSON.stringify(sortData)
+            }).then(function (response) {
+              return response.json();
+            }).then(function (response) {
+              return _this.setState({
+                sortedData: response
+              });
+            });
+          });
+        } else {
+          _this.setState(function () {
+            return {
+              sort: _objectSpread({}, _this.state.sort, _defineProperty({}, sortOption, "desc"))
+            };
+          }, function () {
+            var sortData = {
+              // [sortOption]: this.state.sort[sortOption],
+              sort: "true",
+              sortField: [sortOption],
+              sortOrder: _this.state.sort[sortOption],
+              departure: data[0].departure_city,
+              arrival: data[0].arrival_city,
+              date: data[0].departure_date,
+              passenger: "1",
+              category: "economy"
+            };
+            fetch("sort-flight", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+              },
+              body: JSON.stringify(sortData)
+            }).then(function (response) {
+              return response.json();
+            }).then(function (response) {
+              return _this.setState({
+                sortedData: response
+              });
+            });
+          });
+        }
+      }); // this.setState((previousState, props) => {
+      //     return {
+      //         count: {
+      //             ...previousState.count,
+      //             [sortOption]: previousState.count[sortOption] + 1
+      //         }
+      //     };
+      // });
+      // this.state.count.sortOption++;
+      // if (this.state.count % 2 == 1) {
+      //     this.setState({ sort: "asc" });
+      // } else {
+      //     this.setState({ sort: "desc" });
+      // }
+
+    };
+
+    _this.handleInputChange = function (event, filtername) {
+      // console.log(filtername, event.target.checked);
+      var name = event.target.name;
+      var value = event.target.checked;
+
+      if (filtername == "airline") {
+        _this.setState(function () {
+          return {
+            airline: _objectSpread({}, _this.state.airline, _defineProperty({}, name, value))
+          };
+        });
+      }
+
+      if (filtername == "stops") {
+        _this.setState(function () {
+          return {
+            stops: _objectSpread({}, _this.state.stops, _defineProperty({}, name, value))
+          };
+        });
+      } // } else {
+      //     this.setState((previousState, props) => {
+      //         return { stops: { ...previousState.stops, [name]: value } };
+      //     });
+      // }
+
+    };
 
     _this.changeDateFormat = function (date) {
       var mydate = new Date(date);
@@ -111630,8 +111766,54 @@ function (_Component) {
       _history__WEBPACK_IMPORTED_MODULE_4__["default"].push("/home");
     };
 
+    _this.applyFilter = function () {
+      var postData = {
+        departureTime: _this.state.departureTime,
+        arrivalTime: _this.state.arrivalTime,
+        airline: _this.state.airline,
+        stops: _this.state.stops,
+        filter: true
+      };
+      fetch("apply-filter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        },
+        body: JSON.stringify(postData)
+      });
+    };
+
+    _this.state = {
+      airline: {
+        indigo: false,
+        spicejet: false,
+        airindia: false,
+        vistara: false
+      },
+      stops: {
+        nostop: false,
+        onestop: false
+      },
+      sort: {
+        departure_time: "",
+        arrival_time: "",
+        duration: "",
+        price: ""
+      },
+      count: {
+        departure_time: 0,
+        arrival_time: 0,
+        duration: 0,
+        price: 0
+      },
+      sortedData: []
+    };
     _this.changeDateFormat = _this.changeDateFormat.bind(_assertThisInitialized(_this));
     _this.changeTimeFormat = _this.changeTimeFormat.bind(_assertThisInitialized(_this));
+    _this.handleInputChange = _this.handleInputChange.bind(_assertThisInitialized(_this));
+    _this.applyFilter = _this.applyFilter.bind(_assertThisInitialized(_this));
+    _this.sortHandler = _this.sortHandler.bind(_assertThisInitialized(_this));
     return _this;
   }
 
@@ -111640,7 +111822,16 @@ function (_Component) {
     value: function render() {
       var _this2 = this;
 
-      var data = this.props.location.state.value;
+      var data = [];
+
+      if (this.state.sortedData.length === 0) {
+        console.log("No sorting applied");
+        data = this.props.location.state.value;
+      } else {
+        console.log(" sorting applied");
+        data = this.state.sortedData;
+      }
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
           margin: "25px"
@@ -111664,7 +111855,208 @@ function (_Component) {
         variant: "danger",
         style: styles.modifyBtn,
         onClick: this.modifySearchhandler
-      }, "Modify search")), data.map(function (data) {
+      }, "Modify search")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: {
+          margin: "20px 110px 20px 110px"
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        class: "row"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        class: "col-sm-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", null, "Departure From ", data[0].departure_city), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: styles.mainDivFilter
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "Before 10am")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "10am-4pm"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: styles.mainDivFilter
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "4pm-10pm")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "After 10pm")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        class: "col-sm-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", null, "Arrival To ", data[0].arrival_city), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: styles.mainDivFilter
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "arrivalTime",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "Before 10am")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "arrivalTime",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "10am-4pm"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: styles.mainDivFilter
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "arrivalTime",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "4pm-10pm")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "arrivalTime",
+        onChange: this.handleInputChange
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "After 10pm")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        class: "col-sm-2"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", null, "Stops"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "nostop",
+        onChange: function onChange(e) {
+          return _this2.handleInputChange(e, "stops");
+        } // checked={this.state.stops.noStop}
+
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "No Stops")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "onestop",
+        onChange: function onChange(e) {
+          return _this2.handleInputChange(e, "stops");
+        } // checked={this.state.stops.oneStop}
+
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "1 Stop"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        class: "col-sm-3"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h6", null, "Airlines"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "indigo",
+        onChange: function onChange(e) {
+          return _this2.handleInputChange(e, "airline");
+        }
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "Indigo")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "spicejet",
+        onChange: function onChange(e) {
+          return _this2.handleInputChange(e, "airline");
+        }
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "Spice Jet")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "airindia",
+        onChange: function onChange(e) {
+          return _this2.handleInputChange(e, "airline");
+        }
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "Air India")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("input", {
+        type: "checkbox",
+        name: "vistara",
+        onChange: function onChange(e) {
+          return _this2.handleInputChange(e, "airline");
+        }
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("span", {
+        style: styles.timeFilter
+      }, "Vistara"))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        class: "col-sm-1"
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("button", {
+        type: "submit",
+        class: "btn btn-link",
+        onClick: this.applyFilter
+      }, "Apply Filter")))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: {
+          display: "flex",
+          margin: "0px 0px 0 160px"
+        }
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
+        variant: "link",
+        style: {
+          marginRight: 310
+        }
+      }, "Sort By"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
+        variant: "link",
+        style: {
+          marginRight: 10
+        },
+        onClick: function onClick() {
+          return _this2.sortHandler("departure_time");
+        }
+      }, this.state.sort.departure_time == "asc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-down",
+        style: {
+          margin: 5
+        }
+      }) : "", this.state.sort.departure_time == "desc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-up",
+        style: {
+          margin: 5
+        }
+      }) : "", "Departure"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
+        variant: "link",
+        style: {
+          marginRight: 40
+        },
+        onClick: function onClick() {
+          return _this2.sortHandler("duration");
+        }
+      }, this.state.sort.duration == "asc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-down",
+        style: {
+          margin: 5
+        }
+      }) : "", this.state.sort.duration == "desc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-up",
+        style: {
+          margin: 5
+        }
+      }) : "", "Duration"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
+        variant: "link",
+        style: {
+          marginRight: 50
+        },
+        onClick: function onClick() {
+          return _this2.sortHandler("arrival_time");
+        }
+      }, this.state.sort.arrival_time == "asc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-down",
+        style: {
+          margin: 5
+        }
+      }) : "", this.state.sort.arrival_time == "desc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-up",
+        style: {
+          margin: 5
+        }
+      }) : "", "Arrival"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_3__["Button"], {
+        variant: "link",
+        onClick: function onClick() {
+          return _this2.sortHandler("price");
+        }
+      }, this.state.sort.price == "asc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-down",
+        style: {
+          margin: 5
+        }
+      }) : "", this.state.sort.price == "desc" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("i", {
+        class: "fas fa-sort-up",
+        style: {
+          margin: 5
+        }
+      }) : "", "Price")), data.map(function (data) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Card_Card__WEBPACK_IMPORTED_MODULE_1__["default"], {
           image_url: data.airline_details.flight_image_url,
           flightName: data.airline_details.flight_name,
@@ -111678,10 +112070,10 @@ function (_Component) {
           duration: _this2.changeTimeFormat(data.duration),
           stopCount: data.stop_count,
           stopName: data.stop_name,
-          baseFare: data.fare_details.base_fare,
-          surcharges: data.fare_details.surcharges,
-          otherServices: data.fare_details.other_services,
-          totalFare: data.fare_details.total_fare,
+          baseFare: data.base_fare,
+          surcharges: data.surcharges,
+          otherServices: data.other_services,
+          totalFare: data.total_fare,
           baggageChecking: data.airline_details.baggage_checkin,
           baggageCabin: data.airline_details.baggage_cabin
         });
@@ -111838,18 +112230,27 @@ function (_Component) {
     _this.addPassengerHandler = function () {};
 
     _this.addonsHandler = function (price) {
-      var addons = _this.state.totalAddons;
-      addons = parseInt(addons) + parseInt(price);
+      var fare = [].concat(fare);
+      fare.totalAddons = parseInt(fare.addons) + parseInt(price);
+      fare.totalFare = parseInt(fare.totalFare) + parseInt(price);
 
       _this.setState({
-        totalAddons: addons
-      });
+        fare: fare
+      }); // let addons = this.state.totalAddons;
+      // let totalFare = this.state.totalFare;
+      // addons = parseInt(addons) + parseInt(price);
+      // totalfare=parseInt(totalFare) = parseInt(price);
+      // this.setState({ totalAddons: addons ,totalfare: });
+
     };
 
     _this.state = {
       meals: true,
       baggage: false,
-      totalAddons: 0
+      fare: {
+        totalAddons: 0,
+        totalFare: flightDetails.totalFare
+      }
     };
     _this.onFareHandler = _this.onFareHandler.bind(_assertThisInitialized(_this));
     return _this;
@@ -112020,6 +112421,8 @@ function (_Component) {
         label: "MiddleName"
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
         label: "LastName"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "age"
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Button"], {
         variant: "primary",
         style: styles.btn,
@@ -112099,7 +112502,7 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 
 
 
-var category = ["Business", "Premium Economy", "Economy"];
+var category = ["Business", "Economy"];
 
 var FlightFormField =
 /*#__PURE__*/
@@ -112123,7 +112526,7 @@ function (_Component) {
       };
 
       if (tripDetails.departure && tripDetails.arrival && tripDetails.date && tripDetails.passenger && tripDetails.category) {
-        fetch("Flight", {
+        fetch("flight", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -112776,6 +113179,13 @@ var styles = function styles(theme) {
         duration: theme.transitions.duration.enteringScreen
       }),
       marginLeft: 0
+    },
+    btn: {
+      color: "white",
+      margin: "0 20px 0 1200px"
+    },
+    signupBtn: {
+      color: "white"
     }
   };
 };
@@ -112785,20 +113195,27 @@ var HomePage =
 function (_React$Component) {
   _inherits(HomePage, _React$Component);
 
-  function HomePage() {
-    var _getPrototypeOf2;
-
+  function HomePage(props) {
     var _this;
 
     _classCallCheck(this, HomePage);
 
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    _this = _possibleConstructorReturn(this, (_getPrototypeOf2 = _getPrototypeOf(HomePage)).call.apply(_getPrototypeOf2, [this].concat(args)));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(HomePage).call(this, props));
     _this.state = {
       open: false
+    };
+
+    _this.drawerEventHandler = function (text) {
+      if (text == "Sign Out") {
+        _this.signOutHandler();
+      }
+    };
+
+    _this.mouseOver = function (event) {
+      var element = document.getElementById("button");
+      var e = document.getElementById("signupBtn");
+      e.style.color = "white";
+      element.style.color = "white";
     };
 
     _this.handleDrawerOpen = function () {
@@ -112813,16 +113230,23 @@ function (_React$Component) {
       });
     };
 
+    _this.signOutHandler = function () {// console.log(Auth->user());
+    };
+
     return _this;
   }
 
   _createClass(HomePage, [{
     key: "render",
     value: function render() {
+      var _this2 = this;
+
       var _this$props = this.props,
           classes = _this$props.classes,
           theme = _this$props.theme;
       var open = this.state.open;
+      var data = this.props.location.state.value; // console.log("data", data.firstname);
+
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: classes.root
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_CssBaseline__WEBPACK_IMPORTED_MODULE_5___default.a, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_AppBar__WEBPACK_IMPORTED_MODULE_6___default.a, {
@@ -112835,7 +113259,17 @@ function (_React$Component) {
         "aria-label": "Open drawer",
         onClick: this.handleDrawerOpen,
         className: classnames__WEBPACK_IMPORTED_MODULE_2___default()(classes.menuButton, open && classes.hide)
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_Menu__WEBPACK_IMPORTED_MODULE_12___default.a, null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_9___default.a, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_Menu__WEBPACK_IMPORTED_MODULE_12___default.a, null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "/login",
+        className: classes.btn,
+        onMouseOver: this.mouseOver,
+        id: "button"
+      }, "Login"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+        href: "signup",
+        className: classes.signupBtn,
+        onMouseOver: this.mouseOver,
+        id: "signupBtn"
+      }, "Signup"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_9___default.a, {
         variant: "h6",
         color: "inherit",
         noWrap: true
@@ -112849,7 +113283,14 @@ function (_React$Component) {
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: classes.drawerHeader
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_IconButton__WEBPACK_IMPORTED_MODULE_11___default.a, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_List__WEBPACK_IMPORTED_MODULE_8___default.a, null, ["Hello" + " " + data.firstname].map(function (text, index) {
+        return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItem__WEBPACK_IMPORTED_MODULE_15___default.a, {
+          button: true,
+          key: text
+        }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItemText__WEBPACK_IMPORTED_MODULE_16___default.a, {
+          primary: text
+        }));
+      }), " "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_IconButton__WEBPACK_IMPORTED_MODULE_11___default.a, {
         onClick: this.handleDrawerClose
       }, theme.direction === "ltr" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronLeft__WEBPACK_IMPORTED_MODULE_13___default.a, null) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_14___default.a, null))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Divider__WEBPACK_IMPORTED_MODULE_10___default.a, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_List__WEBPACK_IMPORTED_MODULE_8___default.a, null, ["Book Flight"].map(function (text, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItem__WEBPACK_IMPORTED_MODULE_15___default.a, {
@@ -112861,7 +113302,10 @@ function (_React$Component) {
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Divider__WEBPACK_IMPORTED_MODULE_10___default.a, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_List__WEBPACK_IMPORTED_MODULE_8___default.a, null, ["My Profile", "My Bookings", "About Us", "Sign Out"].map(function (text, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItem__WEBPACK_IMPORTED_MODULE_15___default.a, {
           button: true,
-          key: text
+          key: text,
+          onClick: function onClick() {
+            return _this2.drawerEventHandler(text);
+          }
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItemText__WEBPACK_IMPORTED_MODULE_16___default.a, {
           primary: text
         }));
@@ -112962,13 +113406,13 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/",
         exact: true,
-        component: _Login_Login__WEBPACK_IMPORTED_MODULE_3__["default"]
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
-        path: "/home",
         component: _Homepage__WEBPACK_IMPORTED_MODULE_5__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/signup",
         component: _Signup_Signup__WEBPACK_IMPORTED_MODULE_4__["default"]
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+        path: "/login",
+        component: _Login_Login__WEBPACK_IMPORTED_MODULE_3__["default"]
       }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
         path: "/login/forgetPassword",
         component: _ForgetPassword_ForgetPassword__WEBPACK_IMPORTED_MODULE_6__["default"]
@@ -113142,7 +113586,8 @@ function (_React$PureComponent) {
         name: response.w3.ig,
         email: response.w3.U3,
         googleId: response.googleId,
-        access_token: response.accessToken
+        access_token: response.accessToken // provider: "google"
+
       };
       fetch("googleLogin", {
         method: "POST",
@@ -113156,7 +113601,7 @@ function (_React$PureComponent) {
       }).then(function (response) {
         if (response === "login Successful") {
           _this.setState({
-            login: true
+            isLogin: true
           });
         } else {
           sweetalert__WEBPACK_IMPORTED_MODULE_10___default()("Login failed!", "Please enter a valid username and password!");
@@ -113206,15 +113651,24 @@ function (_React$PureComponent) {
   _createClass(Login, [{
     key: "render",
     value: function render() {
+      if (this.state.isLogin) {
+        console.log(login);
+        return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Redirect"], {
+          to: "/"
+        });
+      }
+
       return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "mainDiv"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "LoginApp"
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        className: "login-heading"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h1", {
         style: {
           marginLeft: 90
         }
-      }, "Login"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }, "Login")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "signInDiv"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h5", null, "Don't Have an account?")), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Link"], {
         to: "/signup"
@@ -113353,7 +113807,9 @@ function (_Component) {
           color: "white",
           textAlign: "center"
         }
-      }, "Book Flight Tickets"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FlightFormField__WEBPACK_IMPORTED_MODULE_1__["default"], null)));
+      }, "Book Flight Tickets"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FlightFormField__WEBPACK_IMPORTED_MODULE_1__["default"], null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        classname: "Carousel"
+      }));
     }
   }]);
 

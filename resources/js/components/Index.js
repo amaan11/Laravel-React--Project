@@ -17,9 +17,10 @@ export default class Index extends Component {
             <Provider store={store}>
                 <Router history={history}>
                     <div>
-                        <Route path="/" exact component={Login} />
-                        <Route path="/home" component={Homepage} />
+                        <Route path="/" exact component={Homepage} />
                         <Route path="/signup" component={Signup} />
+                        <Route path="/login" component={Login} />
+
                         <Route
                             path="/login/forgetPassword"
                             component={ForgetPassword}

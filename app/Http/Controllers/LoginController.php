@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\NewUser;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,6 +11,7 @@ class LoginController extends Controller
 {
     public function index()
     {
+        return view('welcome');
     }
 
     public function login(Request $request)
@@ -17,14 +19,24 @@ class LoginController extends Controller
 
         $input = $request->all();
 
-        $user = NewUser::where('username', $input['username'])->where('password', $input['password'])->get();
+        $login_user = NewUser::where('username', $input['username'])->where('password', $input['password'])->get();
 
         $response['status'] = false;
         $response['data'] = '';
 
-        if (!empty($user->toArray())) {
+        if (!empty($login_user->toArray())) {
+
+            $user = new User();
+            $user->username = $input['username'];
+            $user->password = $input['password'];
+            if ($user->save()) {
+                $response['status'] = false;
+                $response['data'] = '';
+
+            }
+
             $response['status'] = true;
-            $response['data'] = $user;
+            $response['data'] = $login_user;
 
         } else {
             $response['data'] = $input;
@@ -60,5 +72,9 @@ class LoginController extends Controller
             return response()->json('Update unsucessful..Please Try again!');
 
         }
+    }
+    public function logout()
+    {
+
     }
 }

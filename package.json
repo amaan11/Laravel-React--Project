@@ -47,11 +47,13 @@
         "react-redux": "^6.0.1",
         "react-router": "^4.3.1",
         "react-router-dom": "^4.3.1",
+        "react-slick": "^0.24.0",
         "react-validate-form": "^1.0.7",
         "react-virtualized": "^9.21.0",
         "redux": "^4.0.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.3.0",
+        "slick-carousel": "^1.8.1",
         "sweetalert": "^2.1.2"
     },
     "babelrc": {

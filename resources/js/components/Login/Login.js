@@ -44,6 +44,7 @@ class Login extends React.PureComponent {
             email: response.w3.U3,
             googleId: response.googleId,
             access_token: response.accessToken
+            // provider: "google"
         };
         fetch("googleLogin", {
             method: "POST",
@@ -56,7 +57,7 @@ class Login extends React.PureComponent {
             .then(response => response.json())
             .then(response => {
                 if (response === "login Successful") {
-                    this.setState({ login: true });
+                    this.setState({ isLogin: true });
                 } else {
                     swal(
                         "Login failed!",
@@ -100,10 +101,16 @@ class Login extends React.PureComponent {
         // console.log(response.accessToken);
     };
     render() {
+        if (this.state.isLogin) {
+            console.log(login);
+            return <Redirect to="/" />;
+        }
         return (
             <div className="mainDiv">
                 <div className="LoginApp">
-                    <h1 style={{ marginLeft: 90 }}>Login</h1>
+                    <div className="login-heading">
+                        <h1 style={{ marginLeft: 90 }}>Login</h1>
+                    </div>
                     <div className="signInDiv">
                         <div>
                             <h5>Don't Have an account?</h5>

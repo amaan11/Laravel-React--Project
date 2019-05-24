@@ -31,6 +31,7 @@ export default class Menu extends Component {
                     </h1>
                     <FlightFormField />
                 </div>
+                <div classname="Carousel" />
             </div>
         );
     }

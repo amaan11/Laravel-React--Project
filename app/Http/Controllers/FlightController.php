@@ -14,6 +14,10 @@ class FlightController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     public function index()
     {
         return view('welcome');
@@ -39,18 +43,42 @@ class FlightController extends Controller
     {
 
         $data = $request->all();
-
+        // echo "<pre>";
+        // print_r($data);
+        // die;
         if (empty($data)) {
             return $response()->json('Missing Input');
+        }
+
+        if (isset($data['sort']) && $data['sort'] === 'true') {
+            $sortOption = $data['sortField'][0];
+            $order = $data['sortOrder'];
+
+            if ($sortOption === 'price') {
+                $flightId = Flight::join('fare_details as fare', 'fare.flight_id', '=', 'flight.id')->with('airlineDetails', 'fareDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->orderBy('fare.total_fare', $order)->get();
+
+            } else {
+                $flightId = Flight::join('fare_details as fare', 'fare.flight_id', '=', 'flight.id')->with('airlineDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->orderBy($sortOption, $order)->get();
+
+                // $flightId = Flight::with('airlineDetails', 'fareDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->orderBy($sortOption, $order)->get();
+
+            }
+
+        } else {
+            $flightId = Flight::join('fare_details as fare', 'fare.flight_id', '=', 'flight.id')->with('airlineDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->get();
+
+            // $flightId = Flight::with('airlineDetails', 'fareDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->get();
+
         }
 
         $seats = $data['passenger'];
         $class = $data['category'];
 
-        $flight_class = FlightClass::where('class_name', $class)->get();
-        $seat_id = $flight_class[0]->id;
-
-        $flightId = Flight::with('airlineDetails', 'fareDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->get();
+        $flight_class = FlightClass::where('class_name', $class)->first();
+        if (!$flight_class) {
+            return $response()->json('Flight Class Not Found');
+        }
+        $seat_id = $flight_class->id;
 
         $flight = [];
         foreach ($flightId as $flightId) {
@@ -61,6 +89,9 @@ class FlightController extends Controller
             }
 
         }
+        // echo "<pre>";
+        // print_r($flight);
+        // die;
         return response()->json($flight);
 
         // $flight_details=AirlineDetails::where('flight_id',1)->get();
@@ -136,4 +167,5 @@ class FlightController extends Controller
     {
         //
     }
+
 }

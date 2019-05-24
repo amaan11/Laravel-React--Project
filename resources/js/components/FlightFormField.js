@@ -7,7 +7,7 @@ import history from "../history";
 import Flight from "./Flight";
 import swal from "sweetalert";
 
-const category = ["Business", "Premium Economy", "Economy"];
+const category = ["Business", "Economy"];
 
 export default class FlightFormField extends Component {
     constructor(props) {
@@ -36,7 +36,7 @@ export default class FlightFormField extends Component {
             tripDetails.passenger &&
             tripDetails.category
         ) {
-            fetch("Flight", {
+            fetch("flight", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

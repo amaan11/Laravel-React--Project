@@ -9,7 +9,9 @@ import Paper from "@material-ui/core/Paper";
 import MenuItem from "@material-ui/core/MenuItem";
 import Popper from "@material-ui/core/Popper";
 import { withStyles } from "@material-ui/core/styles";
+// import getCity from "./getCity";
 
+// console.log(getCity());
 const suggestions = [
     { label: "Ahmedabad" },
     { label: "Bangalore" },

@@ -106,7 +106,10 @@ export default class FlightDetails extends Component {
         this.state = {
             meals: true,
             baggage: false,
-            totalAddons: 0
+            fare: {
+                totalAddons: 0,
+                totalFare: flightDetails.totalFare
+            }
         };
         this.onFareHandler = this.onFareHandler.bind(this);
     }
@@ -115,9 +118,16 @@ export default class FlightDetails extends Component {
     };
     addPassengerHandler = () => {};
     addonsHandler = price => {
-        let addons = this.state.totalAddons;
-        addons = parseInt(addons) + parseInt(price);
-        this.setState({ totalAddons: addons });
+        let fare = [...fare];
+        fare.totalAddons = parseInt(fare.addons) + parseInt(price);
+        fare.totalFare = parseInt(fare.totalFare) + parseInt(price);
+
+        this.setState({ fare });
+        // let addons = this.state.totalAddons;
+        // let totalFare = this.state.totalFare;
+        // addons = parseInt(addons) + parseInt(price);
+        // totalfare=parseInt(totalFare) = parseInt(price);
+        // this.setState({ totalAddons: addons ,totalfare: });
     };
 
     render() {
@@ -320,6 +330,7 @@ export default class FlightDetails extends Component {
                             <FormField label="FirstName" />
                             <FormField label="MiddleName" />
                             <FormField label="LastName" />
+                            <FormField label="age" />
                         </div>
                         <Button
                             variant="primary"

@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\NewUser;
+use Illuminate\Http\Request;
 
 class SignupController extends Controller
 {
@@ -35,23 +35,30 @@ class SignupController extends Controller
      */
     public function store(Request $request)
     {
-        $data=$request->all();
+        $data = $request->all();
 
-        if(!empty($data)){
-            $user=new Newuser();
-            $user->firstname=$data['firstname'];
-            $user->lastname=$data['lastname'];
-            $user->email=$data['email'];
-            $user->username=$data['username'];
-            $user->contact=$data['contact'];
-            $user->password=$data['password'];
+        $validateData = $request->validate([
+            'firstname' => 'required',
+            'lastname' => 'required',
+            'email' => 'required',
+            'username' => 'bail|required',
+        ]);
+        if (!empty($data)) {
+            $user = new Newuser();
+            $user->firstname = $data['firstname'];
+            $user->lastname = $data['lastname'];
+            $user->email = $data['email'];
+            $user->username = $data['username'];
+            $user->contact = $data['contact'];
+            $user->password = $data['password'];
 
-            if($user->save()){
+            if ($user->save()) {
+                // Mail::to($data['email'])->send(new WelcomeMail());
+
                 return response()->json('Saved successfully');
+            } else {
+                return response()->json('Something went wrong!');
             }
-            else{
-               return response()->json('Something went wrong!');
-         }
 
         }
     }
