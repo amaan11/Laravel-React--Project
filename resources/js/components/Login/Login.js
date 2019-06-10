@@ -14,7 +14,7 @@ class Login extends React.PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            userName: "",
+            email: "",
             password: "",
             isLogin: false
         };
@@ -32,7 +32,7 @@ class Login extends React.PureComponent {
         e.preventDefault();
 
         const userDetails = {
-            username: this.state.userName,
+            email: this.state.email,
             password: this.state.password
         };
         await this.props.fetchUser(userDetails);
@@ -42,11 +42,11 @@ class Login extends React.PureComponent {
         const userGoogleLogindetails = {
             name: response.w3.ig,
             email: response.w3.U3,
-            googleId: response.googleId,
+            providerName: "google",
+            providerId: response.googleId,
             access_token: response.accessToken
-            // provider: "google"
         };
-        fetch("googleLogin", {
+        fetch("social-login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -61,7 +61,7 @@ class Login extends React.PureComponent {
                 } else {
                     swal(
                         "Login failed!",
-                        "Please enter a valid username and password!"
+                        "Please enter a valid Username and password!"
                     );
                 }
             });
@@ -72,11 +72,12 @@ class Login extends React.PureComponent {
         const userFbDetails = {
             name: response.name,
             email: response.email,
-            facebookId: response.id,
+            providerName: "facebook",
+            providerId: response.id,
             access_token: response.accessToken
         };
 
-        fetch("facebookLogin", {
+        fetch("social-login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -121,12 +122,12 @@ class Login extends React.PureComponent {
                     </div>
                     <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
-                            <label>Username:</label>
+                            <label>Email:</label>
                             <input
                                 type="text"
-                                placeholder="Enter Username"
+                                placeholder="Enter Email"
                                 className="form-control"
-                                name="userName"
+                                name="email"
                                 onChange={this.handleChange}
                             />
                         </div>

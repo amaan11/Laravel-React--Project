@@ -13,12 +13,11 @@ export const fetchUser = userData => dispatch => {
     })
         .then(response => response.json())
         // console.log(res.data[0].firstname + res.data[0].lastname);
-
         .then(res => {
             if (res.status) {
                 history.push({
                     pathname: "/",
-                    state: { value: res.data[0] }
+                    state: { value: res.data }
                 });
             } else {
                 swal({

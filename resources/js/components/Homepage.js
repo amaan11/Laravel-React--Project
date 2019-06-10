@@ -87,10 +87,11 @@ class HomePage extends React.Component {
         super(props);
     }
     state = {
-        open: false
+        open: false,
+        isLogin: false
     };
 
-    drawerEventHandler = text => {
+    drawerEventHandler = (text, value) => {
         if (text == "Sign Out") {
             this.signOutHandler();
         }
@@ -110,16 +111,22 @@ class HomePage extends React.Component {
     handleDrawerClose = () => {
         this.setState({ open: false });
     };
-    signOutHandler = () => {
-        // console.log(Auth->user());
+    signOutHandler = value => {
+        console.log(value);
+        fetch("sign-out", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            }
+        });
     };
 
     render() {
         const { classes, theme } = this.props;
         const { open } = this.state;
-        const data = this.props.location.state.value;
 
-        // console.log("data", data.firstname);
+        const value = this.props.location.state.value;
 
         return (
             <div className={classes.root}>
@@ -142,22 +149,30 @@ class HomePage extends React.Component {
                         >
                             <MenuIcon />
                         </IconButton>
-                        <a
-                            href="/login"
-                            className={classes.btn}
-                            onMouseOver={this.mouseOver}
-                            id="button"
-                        >
-                            Login
-                        </a>
-                        <a
-                            href="signup"
-                            className={classes.signupBtn}
-                            onMouseOver={this.mouseOver}
-                            id="signupBtn"
-                        >
-                            Signup
-                        </a>
+                        {/* {!this.state.isLogin ? (
+                            <div>
+                                {" "}
+                                <a
+                                    href="/login"
+                                    className={classes.btn}
+                                    onMouseOver={this.mouseOver}
+                                    id="button"
+                                >
+                                    Login
+                                </a>
+                                <a
+                                    href="signup"
+                                    className={classes.signupBtn}
+                                    onMouseOver={this.mouseOver}
+                                    id="signupBtn"
+                                >
+                                    Signup
+                                </a>
+                            </div>
+                        ) : (
+                            ""
+                        )} */}
+
                         <Typography variant="h6" color="inherit" noWrap />
                     </Toolbar>
                 </AppBar>
@@ -172,13 +187,13 @@ class HomePage extends React.Component {
                 >
                     <div className={classes.drawerHeader}>
                         <List>
-                            {["Hello" + " " + data.firstname].map(
+                            {["Welcome" + " " + value.first_name].map(
                                 (text, index) => (
                                     <ListItem button key={text}>
                                         <ListItemText primary={text} />
                                     </ListItem>
                                 )
-                            )}{" "}
+                            )}
                         </List>
                         <IconButton onClick={this.handleDrawerClose}>
                             {theme.direction === "ltr" ? (
