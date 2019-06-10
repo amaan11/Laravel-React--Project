@@ -110774,7 +110774,7 @@ var fetchUser = function fetchUser(userData) {
         _history__WEBPACK_IMPORTED_MODULE_1__["default"].push({
           pathname: "/",
           state: {
-            value: res.data[0]
+            value: res.data
           }
         });
       } else {
@@ -111721,31 +111721,28 @@ function (_Component) {
 
     };
 
-    _this.handleInputChange = function (event, filtername) {
-      // console.log(filtername, event.target.checked);
-      var name = event.target.name;
-      var value = event.target.checked;
-
-      if (filtername == "airline") {
-        _this.setState(function () {
-          return {
-            airline: _objectSpread({}, _this.state.airline, _defineProperty({}, name, value))
-          };
-        });
-      }
-
-      if (filtername == "stops") {
-        _this.setState(function () {
-          return {
-            stops: _objectSpread({}, _this.state.stops, _defineProperty({}, name, value))
-          };
-        });
-      } // } else {
-      //     this.setState((previousState, props) => {
-      //         return { stops: { ...previousState.stops, [name]: value } };
+    _this.handleInputChange = function (event, filtername) {// console.log(filtername, event.target.checked);
+      // const name = event.target.name;
+      // // const value = event.target.checked;
+      // if (filtername == "airline") {
+      //     this.setState(() => {
+      //         return {
+      //             airline: { ...this.state.airline, [name]: value }
+      //         };
       //     });
       // }
-
+      // if (filtername == "stops") {
+      //     this.setState(() => {
+      //         return {
+      //             stops: { ...this.state.stops, [name]: value }
+      //         };
+      //     });
+      // }
+      // // } else {
+      // //     this.setState((previousState, props) => {
+      // //         return { stops: { ...previousState.stops, [name]: value } };
+      // //     });
+      // // }
     };
 
     _this.changeDateFormat = function (date) {
@@ -111825,13 +111822,12 @@ function (_Component) {
       var data = [];
 
       if (this.state.sortedData.length === 0) {
-        console.log("No sorting applied");
         data = this.props.location.state.value;
       } else {
-        console.log(" sorting applied");
         data = this.state.sortedData;
       }
 
+      console.log("FlightData=>", this.props.location.state);
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
           margin: "25px"
@@ -112075,7 +112071,8 @@ function (_Component) {
           otherServices: data.other_services,
           totalFare: data.total_fare,
           baggageChecking: data.airline_details.baggage_checkin,
-          baggageCabin: data.airline_details.baggage_cabin
+          baggageCabin: data.airline_details.baggage_cabin,
+          passenger: data
         });
       }));
     }
@@ -112227,30 +112224,20 @@ function (_Component) {
       console.log(_this.props.price);
     };
 
-    _this.addPassengerHandler = function () {};
-
     _this.addonsHandler = function (price) {
-      var fare = [].concat(fare);
-      fare.totalAddons = parseInt(fare.addons) + parseInt(price);
-      fare.totalFare = parseInt(fare.totalFare) + parseInt(price);
+      var totalAddons = _this.state.totalAddons;
+      var addons = parseInt(totalAddons) + parseInt(price);
 
       _this.setState({
-        fare: fare
-      }); // let addons = this.state.totalAddons;
-      // let totalFare = this.state.totalFare;
-      // addons = parseInt(addons) + parseInt(price);
-      // totalfare=parseInt(totalFare) = parseInt(price);
-      // this.setState({ totalAddons: addons ,totalfare: });
-
+        totalAddons: addons
+      });
     };
 
     _this.state = {
       meals: true,
       baggage: false,
-      fare: {
-        totalAddons: 0,
-        totalFare: flightDetails.totalFare
-      }
+      totalAddons: 0,
+      passenger: false
     };
     _this.onFareHandler = _this.onFareHandler.bind(_assertThisInitialized(_this));
     return _this;
@@ -112261,6 +112248,18 @@ function (_Component) {
     value: function render() {
       var _this2 = this;
 
+      var adultFormField;
+      adultFormField = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+        style: styles.passengerDetails
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Adult "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "FirstName"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "MiddleName"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "LastName"
+      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
+        label: "age"
+      })));
       var meals, baggage;
       var flightDetails = this.props.location.state.value;
 
@@ -112381,7 +112380,7 @@ function (_Component) {
         style: {
           marginRight: 10
         }
-      }), flightDetails.totalFare)))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+      }), flightDetails.totalFare + parseInt(this.state.totalAddons))))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: styles.flight
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: styles.innerdiv
@@ -112413,20 +112412,14 @@ function (_Component) {
         style: styles.steps
       }, "3"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h4", {
         style: styles.mainText
-      }, "Passenger Details")), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
-        style: styles.passengerDetails
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h3", null, "Adult 1"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "FirstName"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "MiddleName"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "LastName"
-      }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_FormField__WEBPACK_IMPORTED_MODULE_1__["default"], {
-        label: "age"
-      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Button"], {
+      }, "Passenger Details")), adultFormField, this.state.passenger ? adultFormField : "", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Button"], {
         variant: "primary",
         style: styles.btn,
-        onClick: this.addPassengerHandler
+        onClick: function onClick() {
+          return _this2.setState({
+            passenger: true
+          });
+        }
       }, "Add Adult"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         style: {
           display: "flex"
@@ -112442,7 +112435,7 @@ function (_Component) {
       })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_bootstrap__WEBPACK_IMPORTED_MODULE_2__["Button"], {
         variant: "info",
         style: styles.btn
-      }, "Book Now"))));
+      }, "Book Now")));
     }
   }]);
 
@@ -113202,10 +113195,11 @@ function (_React$Component) {
 
     _this = _possibleConstructorReturn(this, _getPrototypeOf(HomePage).call(this, props));
     _this.state = {
-      open: false
+      open: false,
+      isLogin: false
     };
 
-    _this.drawerEventHandler = function (text) {
+    _this.drawerEventHandler = function (text, value) {
       if (text == "Sign Out") {
         _this.signOutHandler();
       }
@@ -113230,7 +113224,15 @@ function (_React$Component) {
       });
     };
 
-    _this.signOutHandler = function () {// console.log(Auth->user());
+    _this.signOutHandler = function (value) {
+      console.log(value);
+      fetch("sign-out", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+        }
+      });
     };
 
     return _this;
@@ -113245,8 +113247,7 @@ function (_React$Component) {
           classes = _this$props.classes,
           theme = _this$props.theme;
       var open = this.state.open;
-      var data = this.props.location.state.value; // console.log("data", data.firstname);
-
+      var value = this.props.location.state.value;
       return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: classes.root
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_CssBaseline__WEBPACK_IMPORTED_MODULE_5___default.a, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_AppBar__WEBPACK_IMPORTED_MODULE_6___default.a, {
@@ -113259,17 +113260,7 @@ function (_React$Component) {
         "aria-label": "Open drawer",
         onClick: this.handleDrawerOpen,
         className: classnames__WEBPACK_IMPORTED_MODULE_2___default()(classes.menuButton, open && classes.hide)
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_Menu__WEBPACK_IMPORTED_MODULE_12___default.a, null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: "/login",
-        className: classes.btn,
-        onMouseOver: this.mouseOver,
-        id: "button"
-      }, "Login"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
-        href: "signup",
-        className: classes.signupBtn,
-        onMouseOver: this.mouseOver,
-        id: "signupBtn"
-      }, "Signup"), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_9___default.a, {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_Menu__WEBPACK_IMPORTED_MODULE_12___default.a, null)), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Typography__WEBPACK_IMPORTED_MODULE_9___default.a, {
         variant: "h6",
         color: "inherit",
         noWrap: true
@@ -113283,14 +113274,14 @@ function (_React$Component) {
         }
       }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
         className: classes.drawerHeader
-      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_List__WEBPACK_IMPORTED_MODULE_8___default.a, null, ["Hello" + " " + data.firstname].map(function (text, index) {
+      }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_List__WEBPACK_IMPORTED_MODULE_8___default.a, null, ["Welcome" + " " + value.first_name].map(function (text, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItem__WEBPACK_IMPORTED_MODULE_15___default.a, {
           button: true,
           key: text
         }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItemText__WEBPACK_IMPORTED_MODULE_16___default.a, {
           primary: text
         }));
-      }), " "), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_IconButton__WEBPACK_IMPORTED_MODULE_11___default.a, {
+      })), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_IconButton__WEBPACK_IMPORTED_MODULE_11___default.a, {
         onClick: this.handleDrawerClose
       }, theme.direction === "ltr" ? react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronLeft__WEBPACK_IMPORTED_MODULE_13___default.a, null) : react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_icons_ChevronRight__WEBPACK_IMPORTED_MODULE_14___default.a, null))), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_Divider__WEBPACK_IMPORTED_MODULE_10___default.a, null), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_List__WEBPACK_IMPORTED_MODULE_8___default.a, null, ["Book Flight"].map(function (text, index) {
         return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_material_ui_core_ListItem__WEBPACK_IMPORTED_MODULE_15___default.a, {
@@ -113562,7 +113553,7 @@ function (_React$PureComponent) {
               case 0:
                 e.preventDefault();
                 userDetails = {
-                  username: _this.state.userName,
+                  email: _this.state.email,
                   password: _this.state.password
                 };
                 _context.next = 4;
@@ -113585,11 +113576,11 @@ function (_React$PureComponent) {
       var userGoogleLogindetails = {
         name: response.w3.ig,
         email: response.w3.U3,
-        googleId: response.googleId,
-        access_token: response.accessToken // provider: "google"
-
+        providerName: "google",
+        providerId: response.googleId,
+        access_token: response.accessToken
       };
-      fetch("googleLogin", {
+      fetch("social-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113604,7 +113595,7 @@ function (_React$PureComponent) {
             isLogin: true
           });
         } else {
-          sweetalert__WEBPACK_IMPORTED_MODULE_10___default()("Login failed!", "Please enter a valid username and password!");
+          sweetalert__WEBPACK_IMPORTED_MODULE_10___default()("Login failed!", "Please enter a valid Username and password!");
         }
       });
       localStorage.setItem("acessToken", response.accessToken);
@@ -113614,10 +113605,11 @@ function (_React$PureComponent) {
       var userFbDetails = {
         name: response.name,
         email: response.email,
-        facebookId: response.id,
+        providerName: "facebook",
+        providerId: response.id,
         access_token: response.accessToken
       };
-      fetch("facebookLogin", {
+      fetch("social-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -113639,7 +113631,7 @@ function (_React$PureComponent) {
     };
 
     _this.state = {
-      userName: "",
+      email: "",
       password: "",
       isLogin: false
     };
@@ -113676,11 +113668,11 @@ function (_React$PureComponent) {
         onSubmit: this.handleSubmit
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Username:"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
+      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("label", null, "Email:"), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("input", {
         type: "text",
-        placeholder: "Enter Username",
+        placeholder: "Enter Email",
         className: "form-control",
-        name: "userName",
+        name: "email",
         onChange: this.handleChange
       })), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "form-group"

@@ -106,31 +106,35 @@ export default class FlightDetails extends Component {
         this.state = {
             meals: true,
             baggage: false,
-            fare: {
-                totalAddons: 0,
-                totalFare: flightDetails.totalFare
-            }
+            totalAddons: 0,
+            passenger: false
         };
         this.onFareHandler = this.onFareHandler.bind(this);
     }
     onFareHandler = () => {
         console.log(this.props.price);
     };
-    addPassengerHandler = () => {};
-    addonsHandler = price => {
-        let fare = [...fare];
-        fare.totalAddons = parseInt(fare.addons) + parseInt(price);
-        fare.totalFare = parseInt(fare.totalFare) + parseInt(price);
 
-        this.setState({ fare });
-        // let addons = this.state.totalAddons;
-        // let totalFare = this.state.totalFare;
-        // addons = parseInt(addons) + parseInt(price);
-        // totalfare=parseInt(totalFare) = parseInt(price);
-        // this.setState({ totalAddons: addons ,totalfare: });
+    addonsHandler = price => {
+        let totalAddons = this.state.totalAddons;
+
+        let addons = parseInt(totalAddons) + parseInt(price);
+        this.setState({ totalAddons: addons });
     };
 
     render() {
+        let adultFormField;
+        adultFormField = (
+            <div style={styles.passengerDetails}>
+                <h3>Adult </h3>
+                <div>
+                    <FormField label="FirstName" />
+                    <FormField label="MiddleName" />
+                    <FormField label="LastName" />
+                    <FormField label="age" />
+                </div>
+            </div>
+        );
         let meals, baggage;
         let flightDetails = this.props.location.state.value;
 
@@ -283,7 +287,8 @@ export default class FlightDetails extends Component {
                                     class="fas fa-rupee-sign"
                                     style={{ marginRight: 10 }}
                                 />
-                                {flightDetails.totalFare}
+                                {flightDetails.totalFare +
+                                    parseInt(this.state.totalAddons)}
                             </div>
                         </div>
                     </div>
@@ -324,35 +329,37 @@ export default class FlightDetails extends Component {
                         <div style={styles.steps}>3</div>
                         <h4 style={styles.mainText}>Passenger Details</h4>
                     </div>
-                    <div style={styles.passengerDetails}>
-                        <h3>Adult 1</h3>
+                    {adultFormField}
+                    {this.state.passenger ? adultFormField : ""}
+                    {/* <div style={styles.passengerDetails}> */}
+                    {/* <h3>Adult 1</h3>
                         <div>
                             <FormField label="FirstName" />
                             <FormField label="MiddleName" />
                             <FormField label="LastName" />
                             <FormField label="age" />
-                        </div>
-                        <Button
-                            variant="primary"
-                            style={styles.btn}
-                            onClick={this.addPassengerHandler}
-                        >
-                            Add Adult
-                        </Button>
-                        <div style={{ display: "flex" }}>
-                            <FormField label="Email" />
-                            <h6 style={{ marginTop: 50 }}>
-                                Your Ticket will be send to this email
-                            </h6>
-                        </div>
-                        <div>
-                            <FormField label="Mobile No." />
-                        </div>
+                        </div> */}
 
-                        <Button variant="info" style={styles.btn}>
-                            Book Now
-                        </Button>
+                    <Button
+                        variant="primary"
+                        style={styles.btn}
+                        onClick={() => this.setState({ passenger: true })}
+                    >
+                        Add Adult
+                    </Button>
+                    <div style={{ display: "flex" }}>
+                        <FormField label="Email" />
+                        <h6 style={{ marginTop: 50 }}>
+                            Your Ticket will be send to this email
+                        </h6>
                     </div>
+                    <div>
+                        <FormField label="Mobile No." />
+                    </div>
+
+                    <Button variant="info" style={styles.btn}>
+                        Book Now
+                    </Button>
                 </div>
             </div>
         );

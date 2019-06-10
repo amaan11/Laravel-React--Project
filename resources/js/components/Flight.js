@@ -169,27 +169,27 @@ class Flight extends Component {
 
     handleInputChange = (event, filtername) => {
         // console.log(filtername, event.target.checked);
-        const name = event.target.name;
-        const value = event.target.checked;
-        if (filtername == "airline") {
-            this.setState(() => {
-                return {
-                    airline: { ...this.state.airline, [name]: value }
-                };
-            });
-        }
-        if (filtername == "stops") {
-            this.setState(() => {
-                return {
-                    stops: { ...this.state.stops, [name]: value }
-                };
-            });
-        }
-        // } else {
-        //     this.setState((previousState, props) => {
-        //         return { stops: { ...previousState.stops, [name]: value } };
+        // const name = event.target.name;
+        // // const value = event.target.checked;
+        // if (filtername == "airline") {
+        //     this.setState(() => {
+        //         return {
+        //             airline: { ...this.state.airline, [name]: value }
+        //         };
         //     });
         // }
+        // if (filtername == "stops") {
+        //     this.setState(() => {
+        //         return {
+        //             stops: { ...this.state.stops, [name]: value }
+        //         };
+        //     });
+        // }
+        // // } else {
+        // //     this.setState((previousState, props) => {
+        // //         return { stops: { ...previousState.stops, [name]: value } };
+        // //     });
+        // // }
     };
 
     changeDateFormat = date => {
@@ -242,13 +242,11 @@ class Flight extends Component {
         let data = [];
 
         if (this.state.sortedData.length === 0) {
-            console.log("No sorting applied");
             data = this.props.location.state.value;
         } else {
-            console.log(" sorting applied");
-
             data = this.state.sortedData;
         }
+        console.log("FlightData=>", this.props.location.state);
 
         return (
             <div>
@@ -554,6 +552,7 @@ class Flight extends Component {
                                 data.airline_details.baggage_checkin
                             }
                             baggageCabin={data.airline_details.baggage_cabin}
+                            passenger={data}
                         />
                     );
                 })}

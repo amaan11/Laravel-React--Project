@@ -17,10 +17,10 @@ Route::group(['middleware' => 'auth'], function () {
     });
     Route::get('login', 'LoginController@index');
     Route::post('login', 'LoginController@login');
-    Route::resource('signup', 'SignupController');
-    Route::resource('home', 'SignupController');
-    Route::post('googleLogin', 'SocialLoginController@googleLogin');
-    Route::post('facebookLogin', 'SocialLoginController@facebookLogin');
+    Route::post('signup', 'LoginController@signup');
+    Route::post('social-login', 'LoginController@socialLogin');
+    // Route::post('googleLogin', 'SocialLoginController@googleLogin');
+    // Route::post('facebookLogin', 'SocialLoginController@facebookLogin');
     Route::post('login/forgetPassword', 'LoginController@find');
     Route::get('login/forgetPassword', ['as' => 'login/forgetPassword', function () {
         return view('welcome');
