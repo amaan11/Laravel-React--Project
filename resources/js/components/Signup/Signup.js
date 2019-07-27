@@ -108,8 +108,8 @@ class Signup extends React.PureComponent {
 
         this.handleValidation();
         const userData = {
-            firstname: this.state.firstName,
-            lastname: this.state.lastName,
+            first_name: this.state.firstName,
+            last_name: this.state.lastName,
             email: this.state.email,
             contact: this.state.contact,
             username: this.state.userName,
@@ -122,7 +122,7 @@ class Signup extends React.PureComponent {
     render() {
         return (
             <div className="SignupApp">
-                <h1>Signup </h1>
+                <h1 style={{ textAlign: 'center' }}>Signup </h1>
                 <form onSubmit={this.submitHandler}>
                     <div className="form-group-signup">
                         <div>

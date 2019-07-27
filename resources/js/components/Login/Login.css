@@ -1,12 +1,16 @@
-.form-control {
-    width: 300px;
+
+.form-group{
+    display:flex;
+    flex-direction:column;
 }
+
 .LoginApp {
-    width: 400px;
+    width: 450px;
+    height:600px;
     margin: auto;
     margin-top: 80px;
     padding: 40px;
-    border: 1px solid grey;
+    border: 1px solid rgb(12, 12, 12);
 }
 
 label {
@@ -14,11 +18,21 @@ label {
 }
 .signInDiv {
     display: flex;
-    padding-bottom: 30px;
+    padding-bottom: 10px;
 }
 .LoginBtn {
-    margin-top: 20px;
-    width: 330px;
+    width: 330px; 
+
+
+}
+.google-login{
+    width:300px;
+    height:55px;
+    margin-top:10px
+}
+.kep-login-facebook{
+    width:300px;
+    height:55px;
 }
 h4 {
     width: 100px;

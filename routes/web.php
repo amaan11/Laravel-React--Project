@@ -12,11 +12,11 @@
 
  */
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/', function () {
-        return view('welcome');
-    });
+    Route::get('/', 'LoginController@index');
+
     Route::get('login', 'LoginController@index');
     Route::post('login', 'LoginController@login');
+    Route::get('signup', 'LoginController@index');
     Route::post('signup', 'LoginController@signup');
     Route::post('social-login', 'LoginController@socialLogin');
     // Route::post('googleLogin', 'SocialLoginController@googleLogin');

@@ -6,8 +6,9 @@ import { Redirect, Link } from "react-router";
 import history from "../history";
 import Flight from "./Flight";
 import swal from "sweetalert";
+import { getDate } from "date-fns/esm";
 
-const category = ["Business", "Economy"];
+const category = ["Select Class", "Business", "Economy"];
 
 export default class FlightFormField extends Component {
     constructor(props) {
@@ -17,22 +18,38 @@ export default class FlightFormField extends Component {
             departure: "",
             redirect: false,
             data: "",
-            value: ""
+            value: "",
+            departureDate: new Date(),
+            returnDate: new Date()
         };
+        this.parseDate = this.parseDate.bind(this);
     }
+
+    parseDate = date => {
+        const parsedDate = `${date.getFullYear()}-${date.getMonth() +
+            1}-${date.getDate()}`;
+        return parsedDate;
+    };
 
     onSearchHandler = () => {
         const tripDetails = {
             departure: this.state.departure,
             arrival: this.state.arrival,
-            date: this.state.date,
+            departureDate: this.parseDate(this.state.departureDate),
+            // returnDate: this.parseDate(this.state.returnDate),
             passenger: this.state.passengerCount,
             category: this.state.category
         };
+        if (this.props.isDisableReturnDate) {
+            tripDetails.returnDate = "";
+        } else {
+            tripDetails.returnDate = `${this.parseDate(this.state.returnDate)}`;
+        }
+        console.log(tripDetails);
         if (
             tripDetails.departure &&
             tripDetails.arrival &&
-            tripDetails.date &&
+            tripDetails.departureDate &&
             tripDetails.passenger &&
             tripDetails.category
         ) {
@@ -69,6 +86,12 @@ export default class FlightFormField extends Component {
     swapInputHandler = (dep, arr) => {
         this.setState({ departure: arr, arrival: dep });
     };
+    handleDepartureDateChange = date => {
+        this.setState({ departureDate: date });
+    };
+    handleReturnDateChange = date => {
+        this.setState({ returnDate: date });
+    };
     render() {
         if (this.state.redirect) {
             console.log("flight");
@@ -80,7 +103,7 @@ export default class FlightFormField extends Component {
         if (this.state.redirect && this.props.redirect === "false") {
             // Remaining Redirection to same page with data
         }
-
+        console.log(this.state.selectedDate);
         return (
             <div style={{ width: 1170 }}>
                 <div
@@ -124,13 +147,25 @@ export default class FlightFormField extends Component {
                         label="Date"
                         type="date"
                         name="date"
-                        handler={this.onChangeHandler}
+                        label="Departure"
+                        value={this.state.departureDate}
+                        handleDateChange={this.handleDepartureDateChange}
                     />
                     <Input
-                        label="No. Of Passengers"
+                        label="Date"
+                        type="date"
+                        name="date"
+                        label="Return"
+                        value={this.state.returnDate}
+                        handleDateChange={this.handleReturnDateChange}
+                        isDisabled={this.props.isDisableReturnDate}
+                    />
+                    <Input
+                        label="Travellers"
                         name="passengerCount"
                         handler={this.onChangeHandler}
                     />
+
                     <Input
                         label="Class"
                         type="Select"

@@ -93,7 +93,6 @@ class HomePage extends React.Component {
 
     drawerEventHandler = (text, value) => {
         if (text == "Sign Out") {
-            this.signOutHandler();
         }
     };
 
@@ -111,22 +110,22 @@ class HomePage extends React.Component {
     handleDrawerClose = () => {
         this.setState({ open: false });
     };
-    signOutHandler = value => {
-        console.log(value);
-        fetch("sign-out", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-            }
-        });
-    };
+    // signOutHandler = value => {
+    //     console.log(value);
+    //     fetch("sign-out", {
+    //         method: "POST",
+    //         headers: {
+    //             "Content-Type": "application/json",
+    //             "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+    //         }
+    //     });
+    // };
 
     render() {
         const { classes, theme } = this.props;
         const { open } = this.state;
 
-        const value = this.props.location.state.value;
+        // const value = this.props.location.state.value;
 
         return (
             <div className={classes.root}>
@@ -137,7 +136,7 @@ class HomePage extends React.Component {
                         [classes.appBarShift]: open
                     })}
                 >
-                    <Toolbar disableGutters={!open}>
+                    <Toolbar disableGutters={!open} style={{ backgroundColor: 'blue' }}>
                         <IconButton
                             color="inherit"
                             aria-label="Open drawer"
@@ -186,7 +185,7 @@ class HomePage extends React.Component {
                     }}
                 >
                     <div className={classes.drawerHeader}>
-                        <List>
+                        {/* <List>
                             {["Welcome" + " " + value.first_name].map(
                                 (text, index) => (
                                     <ListItem button key={text}>
@@ -194,13 +193,13 @@ class HomePage extends React.Component {
                                     </ListItem>
                                 )
                             )}
-                        </List>
+                        </List> */}
                         <IconButton onClick={this.handleDrawerClose}>
                             {theme.direction === "ltr" ? (
                                 <ChevronLeftIcon />
                             ) : (
-                                <ChevronRightIcon />
-                            )}
+                                    <ChevronRightIcon />
+                                )}
                         </IconButton>
                     </div>
                     <Divider />
@@ -239,7 +238,7 @@ class HomePage extends React.Component {
                     <div />
                     <Menu />
                 </main>
-            </div>
+            </div >
         );
     }
 }
