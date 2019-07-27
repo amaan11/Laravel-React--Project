@@ -29,7 +29,6 @@ export const fetchUser = userData => dispatch => {
 };
 
 export const newUser = userData => dispatch => {
-    console.log("data", userData);
     fetch("signup", {
         method: "POST",
         headers: {
@@ -42,11 +41,11 @@ export const newUser = userData => dispatch => {
         .then(response => response.json())
         .then(data => {
             if (data === "Saved successfully") {
-                history.push("home");
+                history.push("/");
             } else {
                 swal({
                     icon: "error",
-                    text: "Signup Failed!PLease Try Again"
+                    text: `Signup Failed! ${data.email}`
                 });
             }
         });

@@ -5,7 +5,7 @@ import { BrowserRouter as Router, Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { fetchUser } from "../../action/userAction";
-
+import Input from "../FormField";
 import GoogleLogin from "react-google-login";
 import FacebookLogin from "react-facebook-login";
 import swal from "sweetalert";
@@ -103,7 +103,6 @@ class Login extends React.PureComponent {
     };
     render() {
         if (this.state.isLogin) {
-            console.log(login);
             return <Redirect to="/" />;
         }
         return (
@@ -122,7 +121,22 @@ class Login extends React.PureComponent {
                     </div>
                     <form onSubmit={this.handleSubmit}>
                         <div className="form-group">
-                            <label>Email:</label>
+                            <div>
+                                <Input
+                                    label="Enter Email"
+                                    name="email"
+                                    handler={this.handleChange}
+                                />
+                            </div>
+                            <div>
+                                <Input
+                                    label="Enter Password"
+                                    name="password"
+                                    handler={this.handleChange}
+                                    className="form-control"
+                                />
+                            </div>
+                            {/* <label>Email:</label>
                             <input
                                 type="text"
                                 placeholder="Enter Email"
@@ -139,7 +153,7 @@ class Login extends React.PureComponent {
                                 className="form-control"
                                 name="password"
                                 onChange={this.handleChange}
-                            />
+                            />*/}
                         </div>
                         <Button
                             type="submit"
@@ -159,6 +173,7 @@ class Login extends React.PureComponent {
                         buttonText="LOGIN WITH GOOGLE"
                         onSuccess={this.responseGoogle}
                         onFailure={this.responseGoogle}
+                        className="google-login"
                     />
                     <br />
                     <br />
@@ -168,6 +183,7 @@ class Login extends React.PureComponent {
                         fields="name,email"
                         callback={this.responseFacebook}
                         version="3.1"
+                        className="kep-login-facebook"
                     />
                 </div>
             </div>

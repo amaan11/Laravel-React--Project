@@ -41,14 +41,12 @@ class FlightController extends Controller
      */
     public function store(Request $request)
     {
-
+        
         $data = $request->all();
-        // echo "<pre>";
-        // print_r($data);
-        // die;
         if (empty($data)) {
             return $response()->json('Missing Input');
         }
+
 
         if (isset($data['sort']) && $data['sort'] === 'true') {
             $sortOption = $data['sortField'][0];
@@ -65,33 +63,53 @@ class FlightController extends Controller
             }
 
         } else {
-            $flightId = Flight::join('fare_details as fare', 'fare.flight_id', '=', 'flight.id')->with('airlineDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->get();
+            $flightId = Flight::join('fare_details as fare', 'fare.flight_id', '=', 'flight.id')->with('airlineDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['departureDate'])->get();
 
             // $flightId = Flight::with('airlineDetails', 'fareDetails')->where('departure_city', $data['departure'])->where('arrival_city', $data['arrival'])->where('departure_date', $data['date'])->get();
 
         }
 
+
         $seats = $data['passenger'];
         $class = $data['category'];
-
         $flight_class = FlightClass::where('class_name', $class)->first();
+
+
         if (!$flight_class) {
             return $response()->json('Flight Class Not Found');
         }
         $seat_id = $flight_class->id;
 
-        $flight = [];
+
+        $flight['departureflight']= $flight['departureflight']=[];
         foreach ($flightId as $flightId) {
             $seats_left = ClassSeats::where('flight_id', $flightId->flight_id)->where('class_id', $seat_id)->get()->pluck('seats_left');
 
             if ($seats_left >= $seats) {
-                $flight[] = $flightId;
+                $flight['departureflight'][] = $flightId;
             }
 
         }
-        // echo "<pre>";
-        // print_r($flight);
-        // die;
+
+        if($data['returnDate']){
+            $returnFlightId = Flight::join('fare_details as fare', 'fare.flight_id', '=', 'flight.id')->with('airlineDetails')->where('departure_city', $data['arrival'])->where('arrival_city', $data['departure'])->where('departure_date', $data['returnDate'])->get();
+            foreach ($returnFlightId as $flightId) {
+                $seatObj = ClassSeats::where('flight_id', $flightId->flight_id)->where('class_id', $seat_id)->get();;
+                if(count($seatObj)>0){
+                    $seatsLeft=$seatObj[0]->seats_left;
+                        if ($seatsLeft >= $seats) {
+                        $flight['returnFlight'][] = $flightId;
+                    }
+                }
+                
+    
+            }
+        }
+       
+
+        if(count($flight) <= 0){
+            return response()->json('No Record Found');
+        }
         return response()->json($flight);
 
         // $flight_details=AirlineDetails::where('flight_id',1)->get();

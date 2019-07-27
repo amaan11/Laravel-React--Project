@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Redirect;
 use Validator;
+use App\Events\UserRegistered;
+use DateTime;
 
 class LoginController extends Controller
 {
@@ -17,7 +19,9 @@ class LoginController extends Controller
      */
     public function index()
     {
-        return view('welcome');
+        $currentDate=\Carbon\Carbon::now();
+      
+        return view('welcome',compact('currentDate'));
     }
 
     /**
@@ -40,46 +44,29 @@ class LoginController extends Controller
     {
         $data = $request->all();
 
-        //Check For validation
+       if(empty($data)){
+           return Redirect()->back()->witthErrors('Empty Input')->withInput();
+       }
 
-        $rules = array(
-            'firstname' => 'required',
-            'lastname' => 'required',
-            'email' => 'required|email',
-            'password' => 'required',
-            'username' => 'required',
-        );
-        $validator = Validator::make($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        $existingUser = User::where('email', $data['email'])->first();
-        if ($existingUser) {
-            return Redirect::back()->withErrors(['Account with email "' . $data['email'] . '" already exist'])->withInput();
-
-        }
-
-        if (!empty($data)) {
             $user = new User();
-            $user->first_name = $data['firstname'];
-            $user->last_name = $data['lastname'];
+
+            if(!$user->validate($data)){
+                $error=$user->getError();
+                return response()->json($error);
+            }
+            $user->first_name = $data['first_name'];
+            $user->last_name = $data['last_name'];
             $user->email = $data['email'];
             $user->username = $data['username'];
             $user->contact = $data['contact'];
             $user->password = Hash::make($data['password']);
 
-            if ($user->save()) {
-                // Mail::to($data['email'])->send(new WelcomeMail());
-
-                return response()->json('Saved successfully');
-            } else {
+            if (!$user->save()) {
                 return response()->json('Something went wrong!');
             }
-
-        }
-    }
+            event(new UserRegistered($user));
+                return response()->json('Saved successfully');
+      }
 
     public function login(Request $request)
     {
